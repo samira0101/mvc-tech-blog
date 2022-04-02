@@ -70,3 +70,63 @@ router.get('/:id', (req, res) => {
       });
   });
 
+// POST /api/users -- add a new user
+router.post('/', (req, res) => {
+  // creating method
+  
+  User.create({
+    username: req.body.username,
+    email: req.body.email,
+    password: req.body.password
+  })
+    // Return the user data to the client as confirmation, then save the session.
+    .then(dbUserData => {
+      req.session.save(() => {
+        req.session.user_id = dbUserData.id;
+        req.session.username = dbUserData.username;
+        req.session.loggedIn = true;
+    
+        res.json(dbUserData);
+      });
+    })
+    // if server error, return that error
+    .catch(err => {
+      console.log(err);
+      res.status(500).json(err);
+    });
+});
+
+// POST /api/users/login -- login route for a user
+router.post('/login',  (req, res) => {
+    // findOne method by email to search the database for an existing user with the email address entered
+    
+    User.findOne({
+        where: {
+        email: req.body.email
+        }
+    }).then(dbUserData => {
+        // if the email is not found, return an error
+        if (!dbUserData) {
+        res.status(400).json({ message: 'There are no users with this email found!' });
+        return;
+        }
+        // Otherwise, verify the user.
+        // Invoke the instance method specified in the User model.
+        const validPassword = dbUserData.checkPassword(req.body.password);
+        // Return an error if the password is invalid (method returns false).
+        if (!validPassword) {
+            res.status(400).json({ message: 'Incorrect password!' });
+            return;
+        }
+        // Save the session and return the user object with a success message if not.
+        req.session.save(() => {
+          // declare session variables
+          req.session.user_id = dbUserData.id;
+          req.session.username = dbUserData.username;
+          req.session.loggedIn = true;
+    
+          res.json({ user: dbUserData, message: 'You are now logged in!' });
+        });
+    });  
+});
+
