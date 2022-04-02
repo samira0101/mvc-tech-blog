@@ -67,3 +67,32 @@ User.init(
             }
         }
   },
+  {
+    // TABLE CONFIGURATION OPTIONS (https://sequelize.org/v5/manual/models-definition.html#configuration))
+    // add hooks for the password hashing operation
+    hooks: {
+        // Set up a beforeCreate lifecycle hook to hash the password and return the new userdata object before the object is generated in the data.
+        async beforeCreate(newUserData) {
+            newUserData.password = await bcrypt.hash(newUserData.password, 10);
+            return newUserData;
+          },
+        // set up a beforeUpdate lifecycle hook to hash the password before a user object is updated in the database
+        async beforeUpdate(updatedUserData) {
+            updatedUserData.password = await bcrypt.hash(updatedUserData.password, 10);
+            return updatedUserData;
+          }
+    },
+    // pass in the imported sequelize connection to the database
+    sequelize,
+    // do not automatically create createdAt/updatedAt timestamp fields
+    timestamps: false,
+    // do not pluralize name of database table
+    freezeTableName: true,
+    // use underscores instead of camel-casing (i.e. `comment_text` and not `commentText`)
+    underscored: true,
+    // make it so the model name stays lowercase in the database
+    modelName: 'user'
+  }
+);
+
+module.exports = User;
