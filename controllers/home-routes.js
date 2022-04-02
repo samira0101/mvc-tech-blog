@@ -100,3 +100,24 @@ router.get('/post/:id', (req, res) => {
       });
   });
 
+// Render the login page. Redirect to the home page if the user is logged in.
+router.get('/login', (req, res) => {
+    if (req.session.loggedIn) {
+      res.redirect('/');
+      return;
+    }
+  
+    res.render('login');
+  });
+
+// Render the sign up page.  If the user is logged in, redirect to the home page.
+router.get('/signup', (req, res) => {
+  if (req.session.loggedIn) {
+    res.redirect('/');
+    return;
+  }
+
+  res.render('signup');
+});
+
+module.exports = router;
