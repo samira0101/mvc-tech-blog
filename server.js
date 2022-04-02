@@ -23,3 +23,14 @@ const helpers = require('./utils/helpers');
 // Initialize handlebars for the html templates
 const hbs = exphbs.create({ helpers });
 
+// Initialize sessions
+const sess = {
+    secret: 'Super secret secret',
+    cookie: { maxAge: 7200000 },
+    resave: false,
+    saveUninitialized: true,
+    store: new SequelizeStore({
+      db: sequelize
+    })
+  };
+
