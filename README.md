@@ -18,7 +18,7 @@ The packages required to run are:
 
 A database will need to be created first then seeded wih data.
 
-The application is deployed on Heroku at 
+The application is deployed on Heroku at https://mvc-tech-blog-1.herokuapp.com/
 
 On Heroku, go to the webpage. As a guest, you can read posts and click on links; as a registered user, you may add your own posts and comment on others'. You can also alter the names and content of your own posts, as well as delete them. You can also change your password, email, and username.
 
